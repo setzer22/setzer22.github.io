@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Playing Around with Arcadia</title>
+  <meta name="description" content="Game Developement in Clojure is not really widespread. Recently, I have come accross a project that tries to bring the Clojure language to the Unity Game eng...">
+
+  <link rel="stylesheet" href="/assets/main.css">
+  <link rel="canonical" href="http://localhost:4000/2017/02/23/arcadia.html">
+  <link rel="alternate" type="application/rss+xml" title="Get Over Lambda" href="/feed.xml">
+  
+  
+</head>
+
+
+  <body>
+
+    <header class="site-header" role="banner">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">Get Over Lambda</a>
+
+    <nav class="site-nav">
+      <span class="menu-icon">
+        <svg viewBox="0 0 18 15" width="18px" height="15px">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </span>
+
+      <div class="trigger">
+        
+          
+          <a class="page-link" href="/about/">About</a>
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <p>
+Game Developement in Clojure is not really widespread. Recently, I have come accross a project that tries to bring the Clojure language to the Unity Game engine using the ClojureCLR version: Arcadia.
+</p>
+
+<p>
+Arcadia is still in an early stage of development, but that didn't stop me from trying it out! In this series of blogposts, I'll explore the current state of Arcadia by developing simple games in it. In this first post, we will learn how to configure arcadia and the basics of creating game logic.
+</p>
+
+<p>
+Note that this is not an in-depth beginner's tutorial or guide, but rather a semi-structured log of my findings during my visit to this framework. Because of that, if you want to follow along, both basic Clojure and Unity knowledge are assumed as I will only talk about the Arcadia-specific parts.
+</p>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">Installation</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+Arcadia is very easy to install. Tweak a couple editor options in Unity and then simply clone their repository into your assets folder.And that's it! Clojure support in Unity is working. This is one of the best documented parts of the framework so I'll just leave a link to the <i>Getting Started</i> page on the official wiki: <a href="https://github.com/arcadia-unity/Arcadia/wiki/Getting-Started">https://github.com/arcadia-unity/Arcadia/wiki/Getting-Started</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2">The REPL and Basic Emacs Integration</h2>
+<div class="outline-text-2" id="text-orgheadline2">
+<p>
+Once you have completed the installation process (you will see "Arcadia Started!" in your Unity console log), you can fire up a REPL and start typing code in! To do so, you must launch <code>REPL.exe</code> from a shell. You can find it inside <code>Project/Assets/Arcadia/Infrastructure/Repl.exe</code>. Despite having the <code>.exe</code> extension and being a binary file, I have found this runs under Linux just fine. From this shell you can evaluate regular clojure code, it will be immediately connected to the unity editor.
+</p>
+
+<p>
+But working from the REPL, especially with a raw one (no tab-completion or other fancy stuff) isn't going to cut it, so the next step is integrating it into your editor. Sadly, documentation on editor integration is not as good as with the installation process. There is a short paragraph in the <i>Getting Started</i> page, and there's also a hidden page on the wiki which seems to be out-of-date.
+</p>
+
+<p>
+Since my editor choice is Spacemacs, for now I've just come up with a simple approach which consists on firing the REPL from whithin an Emacs shell and sending code from the current file using this handy function:
+</p>
+
+<figure class="highlight"><pre><code class="language-elisp" data-lang="elisp"><span class="p">(</span><span class="nb">defun</span> <span class="nv">sh-send-line-or-region</span> <span class="p">(</span><span class="k">&amp;optional</span> <span class="nb">step</span><span class="p">)</span>
+    <span class="p">(</span><span class="nv">interactive</span> <span class="p">())</span>
+    <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nv">proc</span> <span class="p">(</span><span class="nv">get-process</span> <span class="s">"shell"</span><span class="p">))</span>
+          <span class="nv">pbuf</span> <span class="nb">min</span> <span class="nb">max</span> <span class="nv">command</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">unless</span> <span class="nv">proc</span>
+              <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nv">currbuff</span> <span class="p">(</span><span class="nv">current-buffer</span><span class="p">)))</span>
+                <span class="p">(</span><span class="nv">shell</span><span class="p">)</span>
+                <span class="p">(</span><span class="nv">switch-to-buffer</span> <span class="nv">currbuff</span><span class="p">)</span>
+                <span class="p">(</span><span class="k">setq</span> <span class="nv">proc</span> <span class="p">(</span><span class="nv">get-process</span> <span class="s">"shell"</span><span class="p">))</span>
+                <span class="p">))</span>
+      <span class="p">(</span><span class="k">setq</span> <span class="nv">pbuff</span> <span class="p">(</span><span class="nv">process-buffer</span> <span class="nv">proc</span><span class="p">))</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nv">use-region-p</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">setq</span> <span class="nb">min</span> <span class="p">(</span><span class="nv">region-beginning</span><span class="p">)</span>
+              <span class="nb">max</span> <span class="p">(</span><span class="nv">region-end</span><span class="p">))</span>
+        <span class="p">(</span><span class="k">setq</span> <span class="nb">min</span> <span class="p">(</span><span class="nv">point-at-bol</span><span class="p">)</span>
+              <span class="nb">max</span> <span class="p">(</span><span class="nv">point-at-eol</span><span class="p">)))</span>
+      <span class="p">(</span><span class="k">setq</span> <span class="nv">command</span> <span class="p">(</span><span class="nv">concat</span> <span class="p">(</span><span class="nv">buffer-substring</span> <span class="nb">min</span> <span class="nb">max</span><span class="p">)</span> <span class="s">"\n"</span><span class="p">))</span>
+      <span class="p">(</span><span class="nv">with-current-buffer</span> <span class="nv">pbuff</span>
+        <span class="p">(</span><span class="nv">goto-char</span> <span class="p">(</span><span class="nv">process-mark</span> <span class="nv">proc</span><span class="p">))</span>
+        <span class="p">(</span><span class="nv">insert</span> <span class="nv">command</span><span class="p">)</span>
+        <span class="p">(</span><span class="nv">move-marker</span> <span class="p">(</span><span class="nv">process-mark</span> <span class="nv">proc</span><span class="p">)</span> <span class="p">(</span><span class="nv">point</span><span class="p">))</span>
+        <span class="p">)</span> <span class="c1">;;pop-to-buffer does not work with save-current-buffer -- bug?</span>
+      <span class="p">(</span><span class="nv">process-send-string</span>  <span class="nv">proc</span> <span class="nv">command</span><span class="p">)</span>
+      <span class="p">(</span><span class="nv">display-buffer</span> <span class="p">(</span><span class="nv">process-buffer</span> <span class="nv">proc</span><span class="p">)</span> <span class="no">t</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">when</span> <span class="nb">step</span> 
+        <span class="p">(</span><span class="nv">goto-char</span> <span class="nb">max</span><span class="p">)</span>
+        <span class="p">(</span><span class="nv">next-line</span><span class="p">))))</span></code></pre></figure>
+
+<p>
+This function is not mine, credit goes to VitoshKa from this StackOverflow question: <a href="http://stackoverflow.com/questions/6286579/emacs-shell-mode-how-to-send-region-to-shell">http://stackoverflow.com/questions/6286579/emacs-shell-mode-how-to-send-region-to-shell</a>.
+</p>
+
+<p>
+Bind this command to your favourite keybinding and press it to send a file region to the Arcadia REPL. For now this workflow has been more than enough for me. I have read there is better integration using inferior-lisp, but knowing inferior-lisp mode it's not going to be much more better than this so for now I'll stick to this method due to its simplicity.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">Adding Game Logic</h2>
+<div class="outline-text-2" id="text-orgheadline3">
+<p>
+The workflow when you want to add new game logic into your game is a bit different from regular C# Unity. In regular Unity you create a Component class which defines handlers for the Start, Update and other handy messages. Note that Arcadia used to be similar to that, but it has changed since then. If you have seen anything about <code>defcomponent</code> on old youtube videos, this has now been removed from Arcadia and it's not the way to do it. This was a bit confusing at first, but on their <i>Usage</i> document you can find a small reference to the old method: <a href="https://github.com/arcadia-unity/Arcadia/blob/2bdec5e729fea35925b1443d0b9b811e29a65d1a/USAGE.md">https://github.com/arcadia-unity/Arcadia/blob/2bdec5e729fea35925b1443d0b9b811e29a65d1a/USAGE.md</a>.
+</p>
+
+<p>
+The encouraged workflow in Arcadia consists on adding <i>hooks</i> to GameObjects. A hook (similar to the hook concept in emacs) is just a function that is triggered whenever the GameObject receives the object. Note that this function takes the receiver GameObject as argument and returns nothing. This means that this function is not pure, so if you want a more functional with pure functions, you'll have to build something on top of it. Personally, I like that the Arcadia developers have not imposed a purely functional model, and just stuck to exposing the Unity API to clojure in the most clean and simple way. This allows the user to develop its own abstractions on top of it.
+</p>
+
+<p>
+But enough talk, let's see how this looks like in practice. First, create an object called "Cube" into your scene and then create a folder in your assets folder named <code>arcadiacode</code> (or however youwant to call it, actually) and a <code>core.clj</code> file inside. Then add this code into the file (note that the namespace name must match the folder structure):
+</p>
+
+<figure class="highlight"><pre><code class="language-clojure" data-lang="clojure"><span class="p">(</span><span class="nf">ns</span><span class="w"> </span><span class="n">arcadiatest.test</span><span class="w">
+  </span><span class="p">(</span><span class="no">:require</span><span class="w"> </span><span class="p">[</span><span class="n">arcadia.core</span><span class="w"> </span><span class="no">:refer</span><span class="w"> </span><span class="no">:all</span><span class="p">]</span><span class="w">
+            </span><span class="p">[</span><span class="n">arcadia.linear</span><span class="w"> </span><span class="no">:refer</span><span class="w"> </span><span class="no">:all</span><span class="p">]))</span><span class="w">
+
+</span><span class="p">(</span><span class="k">defn</span><span class="w"> </span><span class="n">update-cube</span><span class="w"> </span><span class="p">[</span><span class="n">cube</span><span class="p">]</span><span class="w">
+  </span><span class="p">(</span><span class="nb">..</span><span class="w"> </span><span class="n">cube</span><span class="w"> </span><span class="n">transform</span><span class="w">
+      </span><span class="p">(</span><span class="nf">Rotate</span><span class="w"> </span><span class="p">(</span><span class="nf">v3</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="mi">0</span><span class="p">)))</span><span class="w">
+
+</span><span class="p">(</span><span class="nf">hook+</span><span class="w"> </span><span class="p">(</span><span class="nf">object-named</span><span class="w"> </span><span class="s">"Cube"</span><span class="p">)</span><span class="w">
+       </span><span class="no">:update</span><span class="w">
+       </span><span class="o">#</span><span class="ss">'update-cube</span><span class="p">)</span></code></pre></figure>
+
+<p>
+There's a couple things worth mentioning on the above snippet: 
+</p>
+
+<ul class="org-ul">
+<li>The <code>..</code> form, which allows you to quickly access nested C# members (and even call methods) similar to what the <code>-&gt;</code> macro does when you type <code>(-&gt; person :address :street)</code> to access a nested map.</li>
+<li>The <code>hook+</code> function (<a href="http://arcadia-unity.github.io/docs/#hook">http://arcadia-unity.github.io/docs/#hook</a>), which registers a function as a message handler for a particular object.</li>
+<li>The <code>object-named</code> function (<a href="http://arcadia-unity.github.io/docs/#object-named">http://arcadia-unity.github.io/docs/#object-named</a>), which conveniently finds an object in the scene by its name, if unique.</li>
+<li>The <code>#'update-cube</code> is referenced by its var and not its value. This makes unity dereference the var each time it invokes the update message on our cube. This obviously has an additional cost, but also has the great advantage of reloading changes on-the-fly once you redefine the update-cube function, whitout having to re-add the hook.</li>
+</ul>
+
+<p>
+You can easily guess that this is going to make our cube rotate. But then, when you hit play, nothing happens. This seems to be because Arcadia is not actually scanning clj files in the Project's folders to automatically load them as Unity does with C# or JS. Instead, we must manually load the code into the REPL. Since I haven't figured a better way to do this, I'm currently just evaluating the whole file into the REPL.
+</p>
+
+<p>
+Once you load the <code>arcadiacode.test</code> namespace, you should see a <i>Hook Script</i> component in your Cube gameobject. Now you can hit play and you'll be able to see the cube rotate along its y axis. 
+</p>
+
+<p>
+You might have noticed that unity is now taking considerably longer to load our game once we hit play. This may be disappointing at first, but before you stop the game, head back again to your <code>core.clj</code> file and play with the code in the <code>update-cube</code> function. For instance, play with the values of the rotation vector, or if you're feeling adventurous, try something more complex such as rotating the cube with user input. Re-evaluate your function (again, don't stop the game) and go back to the unity editor&#x2026; Voilà, your changes are now into the game without having to stop.
+</p>
+
+<p>
+This is the same as with regular Clojure. Startup time is bad, but we can live with that since we almost never stop our running Clojure process and we just incrementally test our things inside the REPL, which ends up being one of the most loved features of Clojure! Despite that, this doesn't seem play that well with Unity. Changes to the scene after hitting play will be lost when the game is stopped, so you'll actually have to stop the game from time to time in order to change stuff in the scene, and what's even worse, after hitting play again your REPL state will be lost since the VM is restarted. Because of all this, the developers are already working on it (<a href="https://github.com/arcadia-unity/Arcadia/issues/200">https://github.com/arcadia-unity/Arcadia/issues/200</a>).
+</p>
+</div>
+</div>
+
+      </div>
+    </main>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Get Over Lambda</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li>
+            
+              Get Over Lambda
+            
+            </li>
+            
+            <li><a href="mailto:your-email@domain.com">your-email@domain.com</a></li>
+            
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-2">
+        <ul class="social-media-list">
+          
+          <li>
+            <a href="https://github.com/setzer22"><span class="icon icon--github"><svg viewBox="0 0 16 16" width="16px" height="16px"><path fill="#828282" d="M7.999,0.431c-4.285,0-7.76,3.474-7.76,7.761 c0,3.428,2.223,6.337,5.307,7.363c0.388,0.071,0.53-0.168,0.53-0.374c0-0.184-0.007-0.672-0.01-1.32 c-2.159,0.469-2.614-1.04-2.614-1.04c-0.353-0.896-0.862-1.135-0.862-1.135c-0.705-0.481,0.053-0.472,0.053-0.472 c0.779,0.055,1.189,0.8,1.189,0.8c0.692,1.186,1.816,0.843,2.258,0.645c0.071-0.502,0.271-0.843,0.493-1.037 C4.86,11.425,3.049,10.76,3.049,7.786c0-0.847,0.302-1.54,0.799-2.082C3.768,5.507,3.501,4.718,3.924,3.65 c0,0,0.652-0.209,2.134,0.796C6.677,4.273,7.34,4.187,8,4.184c0.659,0.003,1.323,0.089,1.943,0.261 c1.482-1.004,2.132-0.796,2.132-0.796c0.423,1.068,0.157,1.857,0.077,2.054c0.497,0.542,0.798,1.235,0.798,2.082 c0,2.981-1.814,3.637-3.543,3.829c0.279,0.24,0.527,0.713,0.527,1.437c0,1.037-0.01,1.874-0.01,2.129 c0,0.208,0.14,0.449,0.534,0.373c3.081-1.028,5.302-3.935,5.302-7.362C15.76,3.906,12.285,0.431,7.999,0.431z"/></svg>
+</span><span class="username">setzer22</span></a>
+
+          </li>
+          
+
+          
+        </ul>
+      </div>
+
+      <div class="footer-col footer-col-3">
+        <p>Welcome to my personal blog site. Here is where I dump my random thoughts and interesting programming stories.
+</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

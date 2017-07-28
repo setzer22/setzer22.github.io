@@ -1,0 +1,138 @@
+---
+layout: default
+title: Playing Around with Arcadia
+---
+
+<p>
+Game Developement in Clojure is not really widespread. Recently, I have come accross a project that tries to bring the Clojure language to the Unity Game engine using the ClojureCLR version: Arcadia.
+</p>
+
+<p>
+Arcadia is still in an early stage of development, but that didn't stop me from trying it out! In this series of blogposts, I'll explore the current state of Arcadia by developing simple games in it. In this first post, we will learn how to configure arcadia and the basics of creating game logic.
+</p>
+
+<p>
+Note that this is not an in-depth beginner's tutorial or guide, but rather a semi-structured log of my findings during my visit to this framework. Because of that, if you want to follow along, both basic Clojure and Unity knowledge are assumed as I will only talk about the Arcadia-specific parts.
+</p>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1">Installation</h2>
+<div class="outline-text-2" id="text-orgheadline1">
+<p>
+Arcadia is very easy to install. Tweak a couple editor options in Unity and then simply clone their repository into your assets folder.And that's it! Clojure support in Unity is working. This is one of the best documented parts of the framework so I'll just leave a link to the <i>Getting Started</i> page on the official wiki: <a href="https://github.com/arcadia-unity/Arcadia/wiki/Getting-Started">https://github.com/arcadia-unity/Arcadia/wiki/Getting-Started</a>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2">The REPL and Basic Emacs Integration</h2>
+<div class="outline-text-2" id="text-orgheadline2">
+<p>
+Once you have completed the installation process (you will see "Arcadia Started!" in your Unity console log), you can fire up a REPL and start typing code in! To do so, you must launch <code>REPL.exe</code> from a shell. You can find it inside <code>Project/Assets/Arcadia/Infrastructure/Repl.exe</code>. Despite having the <code>.exe</code> extension and being a binary file, I have found this runs under Linux just fine. From this shell you can evaluate regular clojure code, it will be immediately connected to the unity editor.
+</p>
+
+<p>
+But working from the REPL, especially with a raw one (no tab-completion or other fancy stuff) isn't going to cut it, so the next step is integrating it into your editor. Sadly, documentation on editor integration is not as good as with the installation process. There is a short paragraph in the <i>Getting Started</i> page, and there's also a hidden page on the wiki which seems to be out-of-date.
+</p>
+
+<p>
+Since my editor choice is Spacemacs, for now I've just come up with a simple approach which consists on firing the REPL from whithin an Emacs shell and sending code from the current file using this handy function:
+</p>
+
+{% highlight elisp %}
+(defun sh-send-line-or-region (&optional step)
+    (interactive ())
+    (let ((proc (get-process "shell"))
+          pbuf min max command)
+      (unless proc
+              (let ((currbuff (current-buffer)))
+                (shell)
+                (switch-to-buffer currbuff)
+                (setq proc (get-process "shell"))
+                ))
+      (setq pbuff (process-buffer proc))
+      (if (use-region-p)
+        (setq min (region-beginning)
+              max (region-end))
+        (setq min (point-at-bol)
+              max (point-at-eol)))
+      (setq command (concat (buffer-substring min max) "\n"))
+      (with-current-buffer pbuff
+        (goto-char (process-mark proc))
+        (insert command)
+        (move-marker (process-mark proc) (point))
+        ) ;;pop-to-buffer does not work with save-current-buffer -- bug?
+      (process-send-string  proc command)
+      (display-buffer (process-buffer proc) t)
+      (when step 
+        (goto-char max)
+        (next-line))))
+{% endhighlight %}
+
+<p>
+This function is not mine, credit goes to VitoshKa from this StackOverflow question: <a href="http://stackoverflow.com/questions/6286579/emacs-shell-mode-how-to-send-region-to-shell">http://stackoverflow.com/questions/6286579/emacs-shell-mode-how-to-send-region-to-shell</a>.
+</p>
+
+<p>
+Bind this command to your favourite keybinding and press it to send a file region to the Arcadia REPL. For now this workflow has been more than enough for me. I have read there is better integration using inferior-lisp, but knowing inferior-lisp mode it's not going to be much more better than this so for now I'll stick to this method due to its simplicity.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3">Adding Game Logic</h2>
+<div class="outline-text-2" id="text-orgheadline3">
+<p>
+The workflow when you want to add new game logic into your game is a bit different from regular C# Unity. In regular Unity you create a Component class which defines handlers for the Start, Update and other handy messages. Note that Arcadia used to be similar to that, but it has changed since then. If you have seen anything about <code>defcomponent</code> on old youtube videos, this has now been removed from Arcadia and it's not the way to do it. This was a bit confusing at first, but on their <i>Usage</i> document you can find a small reference to the old method: <a href="https://github.com/arcadia-unity/Arcadia/blob/2bdec5e729fea35925b1443d0b9b811e29a65d1a/USAGE.md">https://github.com/arcadia-unity/Arcadia/blob/2bdec5e729fea35925b1443d0b9b811e29a65d1a/USAGE.md</a>.
+</p>
+
+<p>
+The encouraged workflow in Arcadia consists on adding <i>hooks</i> to GameObjects. A hook (similar to the hook concept in emacs) is just a function that is triggered whenever the GameObject receives the object. Note that this function takes the receiver GameObject as argument and returns nothing. This means that this function is not pure, so if you want a more functional with pure functions, you'll have to build something on top of it. Personally, I like that the Arcadia developers have not imposed a purely functional model, and just stuck to exposing the Unity API to clojure in the most clean and simple way. This allows the user to develop its own abstractions on top of it.
+</p>
+
+<p>
+But enough talk, let's see how this looks like in practice. First, create an object called "Cube" into your scene and then create a folder in your assets folder named <code>arcadiacode</code> (or however youwant to call it, actually) and a <code>core.clj</code> file inside. Then add this code into the file (note that the namespace name must match the folder structure):
+</p>
+
+{% highlight clojure %}
+(ns arcadiatest.test
+  (:require [arcadia.core :refer :all]
+            [arcadia.linear :refer :all]))
+
+(defn update-cube [cube]
+  (.. cube transform
+      (Rotate (v3 0 1 0)))
+
+(hook+ (object-named "Cube")
+       :update
+       #'update-cube)
+{% endhighlight %}
+
+<p>
+There's a couple things worth mentioning on the above snippet: 
+</p>
+
+<ul class="org-ul">
+<li>The <code>..</code> form, which allows you to quickly access nested C# members (and even call methods) similar to what the <code>-&gt;</code> macro does when you type <code>(-&gt; person :address :street)</code> to access a nested map.</li>
+<li>The <code>hook+</code> function (<a href="http://arcadia-unity.github.io/docs/#hook">http://arcadia-unity.github.io/docs/#hook</a>), which registers a function as a message handler for a particular object.</li>
+<li>The <code>object-named</code> function (<a href="http://arcadia-unity.github.io/docs/#object-named">http://arcadia-unity.github.io/docs/#object-named</a>), which conveniently finds an object in the scene by its name, if unique.</li>
+<li>The <code>#'update-cube</code> is referenced by its var and not its value. This makes unity dereference the var each time it invokes the update message on our cube. This obviously has an additional cost, but also has the great advantage of reloading changes on-the-fly once you redefine the update-cube function, whitout having to re-add the hook.</li>
+</ul>
+
+<p>
+You can easily guess that this is going to make our cube rotate. But then, when you hit play, nothing happens. This seems to be because Arcadia is not actually scanning clj files in the Project's folders to automatically load them as Unity does with C# or JS. Instead, we must manually load the code into the REPL. Since I haven't figured a better way to do this, I'm currently just evaluating the whole file into the REPL.
+</p>
+
+<p>
+Once you load the <code>arcadiacode.test</code> namespace, you should see a <i>Hook Script</i> component in your Cube gameobject. Now you can hit play and you'll be able to see the cube rotate along its y axis. 
+</p>
+
+<p>
+You might have noticed that unity is now taking considerably longer to load our game once we hit play. This may be disappointing at first, but before you stop the game, head back again to your <code>core.clj</code> file and play with the code in the <code>update-cube</code> function. For instance, play with the values of the rotation vector, or if you're feeling adventurous, try something more complex such as rotating the cube with user input. Re-evaluate your function (again, don't stop the game) and go back to the unity editor&#x2026; Voilà, your changes are now into the game without having to stop.
+</p>
+
+<p>
+This is the same as with regular Clojure. Startup time is bad, but we can live with that since we almost never stop our running Clojure process and we just incrementally test our things inside the REPL, which ends up being one of the most loved features of Clojure! Despite that, this doesn't seem play that well with Unity. Changes to the scene after hitting play will be lost when the game is stopped, so you'll actually have to stop the game from time to time in order to change stuff in the scene, and what's even worse, after hitting play again your REPL state will be lost since the VM is restarted. Because of all this, the developers are already working on it (<a href="https://github.com/arcadia-unity/Arcadia/issues/200">https://github.com/arcadia-unity/Arcadia/issues/200</a>).
+</p>
+</div>
+</div>

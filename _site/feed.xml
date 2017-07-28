@@ -1,14 +1,130 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2017-02-15T18:16:10+01:00</updated><id>//</id><title type="html">Your awesome title</title><subtitle>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</subtitle><entry><title type="html">Welcome to Jekyll!</title><link href="/jekyll/update/2017/01/29/welcome-to-jekyll.html" rel="alternate" type="text/html" title="Welcome to Jekyll!" /><published>2017-01-29T19:06:43+01:00</published><updated>2017-01-29T19:06:43+01:00</updated><id>/jekyll/update/2017/01/29/welcome-to-jekyll</id><content type="html" xml:base="/jekyll/update/2017/01/29/welcome-to-jekyll.html">&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.3.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2017-07-28T17:12:54+02:00</updated><id>http://localhost:4000//</id><title type="html">Get Over Lambda</title><subtitle>Welcome to my personal blog site. Here is where I dump my random thoughts and interesting programming stories.
+</subtitle><entry><title type="html">Playing Around with Arcadia</title><link href="http://localhost:4000/2017/02/23/arcadia.html" rel="alternate" type="text/html" title="Playing Around with Arcadia" /><published>2017-02-23T00:00:00+01:00</published><updated>2017-02-23T00:00:00+01:00</updated><id>http://localhost:4000/2017/02/23/arcadia</id><content type="html" xml:base="http://localhost:4000/2017/02/23/arcadia.html">&lt;p&gt;
+Game Developement in Clojure is not really widespread. Recently, I have come accross a project that tries to bring the Clojure language to the Unity Game engine using the ClojureCLR version: Arcadia.
+&lt;/p&gt;
 
-&lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
+&lt;p&gt;
+Arcadia is still in an early stage of development, but that didn't stop me from trying it out! In this series of blogposts, I'll explore the current state of Arcadia by developing simple games in it. In this first post, we will learn how to configure arcadia and the basics of creating game logic.
+&lt;/p&gt;
 
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
+&lt;p&gt;
+Note that this is not an in-depth beginner's tutorial or guide, but rather a semi-structured log of my findings during my visit to this framework. Because of that, if you want to follow along, both basic Clojure and Unity knowledge are assumed as I will only talk about the Arcadia-specific parts.
+&lt;/p&gt;
 
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+&lt;div id=&quot;outline-container-orgheadline1&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;orgheadline1&quot;&gt;Installation&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-orgheadline1&quot;&gt;
+&lt;p&gt;
+Arcadia is very easy to install. Tweak a couple editor options in Unity and then simply clone their repository into your assets folder.And that's it! Clojure support in Unity is working. This is one of the best documented parts of the framework so I'll just leave a link to the &lt;i&gt;Getting Started&lt;/i&gt; page on the official wiki: &lt;a href=&quot;https://github.com/arcadia-unity/Arcadia/wiki/Getting-Started&quot;&gt;https://github.com/arcadia-unity/Arcadia/wiki/Getting-Started&lt;/a&gt;.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
 
-&lt;p&gt;Check out the &lt;a href=&quot;https://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">You’ll find this post in your _posts directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run jekyll serve, which launches a web server and auto-regenerates your site when a file is updated.</summary></entry></feed>
+&lt;div id=&quot;outline-container-orgheadline2&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;orgheadline2&quot;&gt;The REPL and Basic Emacs Integration&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-orgheadline2&quot;&gt;
+&lt;p&gt;
+Once you have completed the installation process (you will see &quot;Arcadia Started!&quot; in your Unity console log), you can fire up a REPL and start typing code in! To do so, you must launch &lt;code&gt;REPL.exe&lt;/code&gt; from a shell. You can find it inside &lt;code&gt;Project/Assets/Arcadia/Infrastructure/Repl.exe&lt;/code&gt;. Despite having the &lt;code&gt;.exe&lt;/code&gt; extension and being a binary file, I have found this runs under Linux just fine. From this shell you can evaluate regular clojure code, it will be immediately connected to the unity editor.
+&lt;/p&gt;
+
+&lt;p&gt;
+But working from the REPL, especially with a raw one (no tab-completion or other fancy stuff) isn't going to cut it, so the next step is integrating it into your editor. Sadly, documentation on editor integration is not as good as with the installation process. There is a short paragraph in the &lt;i&gt;Getting Started&lt;/i&gt; page, and there's also a hidden page on the wiki which seems to be out-of-date.
+&lt;/p&gt;
+
+&lt;p&gt;
+Since my editor choice is Spacemacs, for now I've just come up with a simple approach which consists on firing the REPL from whithin an Emacs shell and sending code from the current file using this handy function:
+&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-elisp&quot; data-lang=&quot;elisp&quot;&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;defun&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;sh-send-line-or-region&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;&amp;amp;optional&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;step&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;interactive&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;get-process&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;shell&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+          &lt;span class=&quot;nv&quot;&gt;pbuf&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;unless&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt;
+              &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;currbuff&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;current-buffer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;shell&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;switch-to-buffer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;currbuff&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;setq&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;get-process&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;shell&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;setq&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pbuff&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;process-buffer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;use-region-p&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;setq&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;region-beginning&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+              &lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;region-end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;setq&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;point-at-bol&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+              &lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;point-at-eol&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;setq&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;command&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;concat&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;buffer-substring&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;min&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;\n&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;with-current-buffer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pbuff&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;goto-char&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;process-mark&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;insert&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;move-marker&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;process-mark&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;;;pop-to-buffer does not work with save-current-buffer -- bug?&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;process-send-string&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;display-buffer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;process-buffer&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;proc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;when&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;step&lt;/span&gt; 
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;goto-char&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;next-line&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))))&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;
+This function is not mine, credit goes to VitoshKa from this StackOverflow question: &lt;a href=&quot;http://stackoverflow.com/questions/6286579/emacs-shell-mode-how-to-send-region-to-shell&quot;&gt;http://stackoverflow.com/questions/6286579/emacs-shell-mode-how-to-send-region-to-shell&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+Bind this command to your favourite keybinding and press it to send a file region to the Arcadia REPL. For now this workflow has been more than enough for me. I have read there is better integration using inferior-lisp, but knowing inferior-lisp mode it's not going to be much more better than this so for now I'll stick to this method due to its simplicity.
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div id=&quot;outline-container-orgheadline3&quot; class=&quot;outline-2&quot;&gt;
+&lt;h2 id=&quot;orgheadline3&quot;&gt;Adding Game Logic&lt;/h2&gt;
+&lt;div class=&quot;outline-text-2&quot; id=&quot;text-orgheadline3&quot;&gt;
+&lt;p&gt;
+The workflow when you want to add new game logic into your game is a bit different from regular C# Unity. In regular Unity you create a Component class which defines handlers for the Start, Update and other handy messages. Note that Arcadia used to be similar to that, but it has changed since then. If you have seen anything about &lt;code&gt;defcomponent&lt;/code&gt; on old youtube videos, this has now been removed from Arcadia and it's not the way to do it. This was a bit confusing at first, but on their &lt;i&gt;Usage&lt;/i&gt; document you can find a small reference to the old method: &lt;a href=&quot;https://github.com/arcadia-unity/Arcadia/blob/2bdec5e729fea35925b1443d0b9b811e29a65d1a/USAGE.md&quot;&gt;https://github.com/arcadia-unity/Arcadia/blob/2bdec5e729fea35925b1443d0b9b811e29a65d1a/USAGE.md&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+The encouraged workflow in Arcadia consists on adding &lt;i&gt;hooks&lt;/i&gt; to GameObjects. A hook (similar to the hook concept in emacs) is just a function that is triggered whenever the GameObject receives the object. Note that this function takes the receiver GameObject as argument and returns nothing. This means that this function is not pure, so if you want a more functional with pure functions, you'll have to build something on top of it. Personally, I like that the Arcadia developers have not imposed a purely functional model, and just stuck to exposing the Unity API to clojure in the most clean and simple way. This allows the user to develop its own abstractions on top of it.
+&lt;/p&gt;
+
+&lt;p&gt;
+But enough talk, let's see how this looks like in practice. First, create an object called &quot;Cube&quot; into your scene and then create a folder in your assets folder named &lt;code&gt;arcadiacode&lt;/code&gt; (or however youwant to call it, actually) and a &lt;code&gt;core.clj&lt;/code&gt; file inside. Then add this code into the file (note that the namespace name must match the folder structure):
+&lt;/p&gt;
+
+&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-clojure&quot; data-lang=&quot;clojure&quot;&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;ns&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arcadiatest.test&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;:require&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arcadia.core&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;:refer&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;:all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arcadia.linear&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;:refer&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;:all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;defn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update-cube&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cube&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;..&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cube&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;transform&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+      &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;Rotate&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;v3&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hook+&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;object-named&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Cube&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+       &lt;/span&gt;&lt;span class=&quot;no&quot;&gt;:update&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+       &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;'update-cube&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
+
+&lt;p&gt;
+There's a couple things worth mentioning on the above snippet: 
+&lt;/p&gt;
+
+&lt;ul class=&quot;org-ul&quot;&gt;
+&lt;li&gt;The &lt;code&gt;..&lt;/code&gt; form, which allows you to quickly access nested C# members (and even call methods) similar to what the &lt;code&gt;-&amp;gt;&lt;/code&gt; macro does when you type &lt;code&gt;(-&amp;gt; person :address :street)&lt;/code&gt; to access a nested map.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;hook+&lt;/code&gt; function (&lt;a href=&quot;http://arcadia-unity.github.io/docs/#hook&quot;&gt;http://arcadia-unity.github.io/docs/#hook&lt;/a&gt;), which registers a function as a message handler for a particular object.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;object-named&lt;/code&gt; function (&lt;a href=&quot;http://arcadia-unity.github.io/docs/#object-named&quot;&gt;http://arcadia-unity.github.io/docs/#object-named&lt;/a&gt;), which conveniently finds an object in the scene by its name, if unique.&lt;/li&gt;
+&lt;li&gt;The &lt;code&gt;#'update-cube&lt;/code&gt; is referenced by its var and not its value. This makes unity dereference the var each time it invokes the update message on our cube. This obviously has an additional cost, but also has the great advantage of reloading changes on-the-fly once you redefine the update-cube function, whitout having to re-add the hook.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+You can easily guess that this is going to make our cube rotate. But then, when you hit play, nothing happens. This seems to be because Arcadia is not actually scanning clj files in the Project's folders to automatically load them as Unity does with C# or JS. Instead, we must manually load the code into the REPL. Since I haven't figured a better way to do this, I'm currently just evaluating the whole file into the REPL.
+&lt;/p&gt;
+
+&lt;p&gt;
+Once you load the &lt;code&gt;arcadiacode.test&lt;/code&gt; namespace, you should see a &lt;i&gt;Hook Script&lt;/i&gt; component in your Cube gameobject. Now you can hit play and you'll be able to see the cube rotate along its y axis. 
+&lt;/p&gt;
+
+&lt;p&gt;
+You might have noticed that unity is now taking considerably longer to load our game once we hit play. This may be disappointing at first, but before you stop the game, head back again to your &lt;code&gt;core.clj&lt;/code&gt; file and play with the code in the &lt;code&gt;update-cube&lt;/code&gt; function. For instance, play with the values of the rotation vector, or if you're feeling adventurous, try something more complex such as rotating the cube with user input. Re-evaluate your function (again, don't stop the game) and go back to the unity editor&amp;#x2026; Voilà, your changes are now into the game without having to stop.
+&lt;/p&gt;
+
+&lt;p&gt;
+This is the same as with regular Clojure. Startup time is bad, but we can live with that since we almost never stop our running Clojure process and we just incrementally test our things inside the REPL, which ends up being one of the most loved features of Clojure! Despite that, this doesn't seem play that well with Unity. Changes to the scene after hitting play will be lost when the game is stopped, so you'll actually have to stop the game from time to time in order to change stuff in the scene, and what's even worse, after hitting play again your REPL state will be lost since the VM is restarted. Because of all this, the developers are already working on it (&lt;a href=&quot;https://github.com/arcadia-unity/Arcadia/issues/200&quot;&gt;https://github.com/arcadia-unity/Arcadia/issues/200&lt;/a&gt;).
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;</content><summary type="html">Game Developement in Clojure is not really widespread. Recently, I have come accross a project that tries to bring the Clojure language to the Unity Game engine using the ClojureCLR version: Arcadia.</summary></entry></feed>
